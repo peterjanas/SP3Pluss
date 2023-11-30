@@ -8,6 +8,7 @@ public class Setup {
     private ArrayList<Movie> movies = new ArrayList<>();
     FileIO io = new FileIO();
     TextUI ui = new TextUI();
+    DBIO dbio;
     Login login;
     MainMenu menu;
 
@@ -16,20 +17,29 @@ public class Setup {
     public Setup() {
         this.login = new Login(this);
         this.menu = new MainMenu(this);
+        this.dbio = new DBIO(this);
         this.login.setMenu(menu);
         this.menu.setLogin(login);
+        this.menu.setDBIO(dbio);
     }
 
     public void setup() {
-
-        loadUser();
-        loadMovies();
-        loadSeries();
+        dbloaduser();
+        dbio.readDataSeries();
+        dbio.readDataMovies();
+        //loadUser();
+        //loadMovies();
+        //loadSeries();
         login.loginOrCreate();
     }
 
     public HashMap<String, String> getUsers() {
         return users;
+    }
+
+    public void dbloaduser() {
+        dbio.loadUser();
+        users = dbio.getUsers();
     }
 
     private void loadMovies() {

@@ -1,6 +1,5 @@
 package org.example;
 
-import java.io.File;
 import java.sql.*;
 import java.util.*;
 
@@ -14,8 +13,18 @@ public class DBIO {
     static final String DB_URL = "jdbc:mysql://localhost/mystreaming";
     static final String USER = "root";
     static final String PASS = "14Tempusedaxrerum";
-    protected final ArrayList<Movie> movieMedia = new ArrayList<>();
-    protected final ArrayList<Series> seriesMedia = new ArrayList<>();
+    protected final ArrayList<Movie> movies;
+    protected final ArrayList<Series> series;
+    private HashMap<String, String> users;
+    Setup setup;
+
+    public DBIO(Setup setup) {
+        this.setup = setup;
+        this.users = setup.getUsers();
+        this.movies = setup.getMovies();
+        this.series = setup.getSeries();
+
+    }
 
 
     public void readDataMovies() {
@@ -24,19 +33,14 @@ public class DBIO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            System.out.println("\nConnecting do database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-
-            System.out.println("\nCreating statement...");
             String sql = "SELECT * FROM movie";
             stmt = conn.prepareStatement((sql));
 
             ResultSet rs = stmt.executeQuery();
 
-            System.out.println("\nPrinting result:");
             while (rs.next()) {
-
                 String name = rs.getString("name");
                 int year = rs.getInt("year");
                 String[] genres = rs.getString("genre").strip().split(",");
@@ -44,12 +48,9 @@ public class DBIO {
                 double rating = rs.getDouble("rating");
                 int movieID = rs.getInt("movieID");
                 Movie m = new Movie(name, year, genre, rating, movieID);
-                movieMedia.add(m);
-
-                //System.out.println("\nTitle: " + name + "\nYear: " + year + "\nGenre: " + genre + "\nRating: " + rating + "\nMovieID: " + movieID + "\n");
+                movies.add(m);
             }
 
-            //System.out.println(movieMedia);
             rs.close();
             stmt.close();
             conn.close();
@@ -73,19 +74,15 @@ public class DBIO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            System.out.println("\nConnecting do database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
 
-            System.out.println("\nCreating statement...");
             String sql = "SELECT * FROM series";
             stmt = conn.prepareStatement((sql));
 
             ResultSet rs = stmt.executeQuery();
 
-            System.out.println("\nPrinting result:");
             while (rs.next()) {
-
                 String name = rs.getString("name");
                 String runtime = rs.getString("runtime");
                 String[] genres = rs.getString("genre").strip().split(",");
@@ -94,8 +91,7 @@ public class DBIO {
                 String seasonAndEpisode = rs.getString("seasonAndEpisode");
                 int seriesID = rs.getInt("seriesID");
                 Series s = new Series(name, runtime, genre, rating, seasonAndEpisode, seriesID);
-                seriesMedia.add(s);
-
+                series.add(s);
             }
 
             rs.close();
@@ -115,39 +111,26 @@ public class DBIO {
         }
     }
 
-
-    public void saveUser() {
+    public void loadUser() {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            System.out.println("\nConnecting do database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-
-            System.out.println("\nCreating statement...");
-            String sql = "INSERT INTO user VALUES ()";
+            String sql = "SELECT * FROM user";
             stmt = conn.prepareStatement((sql));
 
             ResultSet rs = stmt.executeQuery();
 
-            System.out.println("\nPrinting result:");
             while (rs.next()) {
 
-                String name = rs.getString("name");
-                String runtime = rs.getString("runtime");
-                String[] genres = rs.getString("genre").strip().split(",");
-                ArrayList<String> genre = new ArrayList<>(List.of(genres));
-                double rating = rs.getDouble("rating");
-                String seasonAndEpisode = rs.getString("seasonAndEpisode");
-                int seriesID = rs.getInt("seriesID");
-                Series s = new Series(name, runtime, genre, rating, seasonAndEpisode, seriesID);
-                seriesMedia.add(s);
-
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                users.put(username, password);
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -163,5 +146,41 @@ public class DBIO {
                 se2.printStackTrace();
             }
         }
+    }
+
+    public void saveUser(String username, String password) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO user (username,password) VALUES (?,?)";
+            stmt = conn.prepareStatement((sql));
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.executeUpdate();
+
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    public HashMap<String, String> getUsers() {
+        return users;
     }
 }

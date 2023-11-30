@@ -17,9 +17,6 @@ public class Movie extends Media {
     double rating;
 
 
-
-
-
     public Movie(String title, int release, ArrayList<String> genre, double rating) {
 
         super(title, genre, rating);
@@ -50,6 +47,6 @@ public class Movie extends Media {
     @Override
     public String toString() {
         return "Title: " + getTitle() + "\n" + "Genre: " + getGenre() + "\n" + "Release year: " + getRelease() +
-                "\n" + "Rating: " + getRating()+"\n";
+                "\n" + "Rating: " + getRating() + "\n";
     }
 }

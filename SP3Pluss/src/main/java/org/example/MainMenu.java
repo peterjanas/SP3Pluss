@@ -10,12 +10,16 @@ public class MainMenu {
     private HashMap<String, String> users;
     Scanner scan = new Scanner(System.in);
     FileIO io = new FileIO();
+    DBIO dbio;
     ArrayList<Media> mediaList = new ArrayList<>();
 
     public MainMenu(Setup setup) {
         this.setup = setup;
     }
+    public void setDBIO(DBIO dbio){
+        this.dbio = dbio;
 
+    }
     public void setLogin(Login login) {
         this.login = login;
         this.users = login.getUsers();
@@ -169,8 +173,9 @@ public class MainMenu {
 
     public void saveAndExit(User currentUser) {
         ui.displayMessage("saving and exiting");
-        io.saveUserData("Textdata/User.txt", users);
-        io.createUserFolder(currentUser);
+        //io.saveUserData("Textdata/User.txt", users);
+        //io.createUserFolder(currentUser);
+        dbio.saveUser(currentUser.getUsername(),currentUser.getPassword());
         System.exit(0);
     }
 

@@ -21,12 +21,11 @@ public class Series extends Media {
         this.episode = episode;
     }
 
-    public Series(String title, String runTime, ArrayList<String> genre, double rating, String seasonAndEpisode, int seriesID){
+    public Series(String title, String runTime, ArrayList<String> genre, double rating, String seasonAndEpisode, int seriesID) {
         super(title, genre, rating);
         this.runTime = runTime;
         this.seasonAndEpisode = seasonAndEpisode;
         this.seriesID = seriesID;
-
 
 
     }
@@ -50,7 +49,7 @@ public class Series extends Media {
     @Override
     public String toString() {
         return "Title: " + getTitle() + "\n" + "Runtime: " + getRunTime() + "\n" + "Genre: " + getGenre() +
-                "\n" + "Rating: " + getRating() + "\n" + "Season: " + getSeason() + "\n" + "Episodes: " + getEpisode()+"\n" + "Season and episode: " + getSeasonAndEpisode();
+                "\n" + "Rating: " + getRating() + "\n" + "Season: " + getSeason() + "\n" + "Episodes: " + getEpisode() + "\n" + "Season and episode: " + getSeasonAndEpisode();
     }
 
     @Override
@@ -58,7 +57,7 @@ public class Series extends Media {
         return false;
     }
 
-    public String getSeasonAndEpisode(){
+    public String getSeasonAndEpisode() {
         return seasonAndEpisode;
     }
 }
